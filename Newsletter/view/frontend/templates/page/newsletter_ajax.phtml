@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    require(['jquery'],function($){
+        var form = $('#newsletter-validate-detail');
+        form.submit(function(e) {
+            if(form.validation('isValid')){
+                var email = $("#newsletter-validate-detail #newsletter").val();
+                var url = form.attr('action');
+                e.preventDefault();
+                try{
+                    $.ajax({
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {email: email},
+                        success: function (data){
+                            console.log(data.status);
+                                 $(".custom-msg").remove();
+                            if(data.status != "ERROR"){
+                                $( '<div for="newsletter" generated="true" class="message success custom-msg" id="newsletter-success" style="display: block;">'+data.msg+'</div>' ).insertAfter( "#newsletter" );
+                            }else{
+                                $( '<div for="newsletter" generated="true" class="error message custom-msg" id="newsletter-error" style="display: block;">'+data.msg+'</div>' ).insertAfter( "#newsletter" );
+                            }
+              
+                            $('button.action.subscribe').removeAttr('disabled');
+                        },
+                    });
+                } catch (e){
+                    $('button.action.subscribe').removeAttr('disabled');    
+                }
+            }
+        });
+    })
+</script>
